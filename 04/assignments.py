@@ -9,6 +9,8 @@ class Assignment:
     def contains(self, other: "Assignment") -> bool:
         return self.start <= other.start and self.end >= other.end
 
+    def overlaps(self, other: "Assignment") -> bool:
+        return self.start <= other.end and other.start <= self.end
 
 def readAssignment(part: str) -> Assignment:
     start, end = part.split("-")
@@ -24,10 +26,26 @@ def readLines(txt: str) -> list[tuple[Assignment, Assignment]]:
     return [readLine(line) for line in txt.splitlines() if line.strip() != ""]
 
 
+def isContained(a: Assignment, b: Assignment) -> bool:
+    return a.contains(b) or b.contains(a)
+
+
+def overlaps(a: Assignment, b: Assignment) -> bool:
+    return a.overlaps(b) or b.overlaps(a)
+
+
+def countContained(assignments: list[tuple[Assignment, Assignment]]) -> int:
+    count = 0
+    for pair in assignments:
+        if isContained(pair[0], pair[1]):
+            count += 1
+    return count
+
+
 def countOverlapping(assignments: list[tuple[Assignment, Assignment]]) -> int:
     count = 0
     for pair in assignments:
-        if pair[0].contains(pair[1]) or pair[1].contains(pair[0]):
+        if overlaps(pair[0], pair[1]):
             count += 1
     return count
 
@@ -43,6 +61,10 @@ if __name__ == "__main__":
 """
 
     assignments = readLines(txt)
+    n_contained = countContained(assignments)
+
+    assert n_contained == 2
+
     n_overlapping = countOverlapping(assignments)
 
-    assert n_overlapping == 2
+    assert n_overlapping == 4
