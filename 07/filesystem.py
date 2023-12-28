@@ -147,6 +147,19 @@ def createExecution(lines: list[str]) -> Execution:
     return Execution(root, current_path, commands)
 
 
+def calculate_missing_space(execution: Execution, total_sz: int, required_sz: int) -> int:
+    currently_occupied = execution.root.get_size()
+    currently_free = total_sz - currently_occupied
+    return required_sz - currently_free
+
+
+def find_smallest_folder(execution: Execution, min_sz: int) -> Node:
+    dirs = execution.root.get_directories()
+    dirs = [dir for dir in dirs if dir.get_size() >= min_sz]
+    dirs.sort(key=lambda dir: dir.get_size())
+    return dirs[0]
+
+
 if __name__ == "__main__":
     txt = str("""\
 $ cd /
@@ -182,3 +195,10 @@ $ ls
     at_most_100000_dirs = [dir for dir in execution.root.get_directories() if dir.get_size() <= 100000]
     res = sum(dir.get_size() for dir in at_most_100000_dirs)
     assert res == 95437
+
+    missing_space = calculate_missing_space(execution, 70000000, 30000000)
+    assert missing_space == 8381165
+
+    smallest_folder = find_smallest_folder(execution, 10000000)
+    assert smallest_folder.name == "d"
+    assert smallest_folder.get_size() == 24933642

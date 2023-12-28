@@ -1,5 +1,5 @@
 import os
-from filesystem import createExecution
+from filesystem import createExecution, calculate_missing_space, find_smallest_folder
 
 dirname = os.path.dirname(__file__)
 filename = os.path.join(dirname, 'input.txt')
@@ -15,3 +15,9 @@ with open(filename) as f:
     res = sum(dir.get_size() for dir in at_most_100000_dirs)
 
     print(f"Part 1: {res}")
+
+    missing_space = calculate_missing_space(execution, 70000000, 30000000)
+    folder_to_delete = find_smallest_folder(execution, missing_space)
+    res2 = folder_to_delete.get_size()
+
+    print(f"Part 2: {res2}")
