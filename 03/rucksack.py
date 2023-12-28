@@ -1,8 +1,9 @@
 type Compartments = tuple[str, str]
 
+
 def readCompartments(line: str) -> Compartments:
-    l = len(line)
-    return line[:l // 2], line[l // 2:]
+    length = len(line)
+    return line[:length // 2], line[length // 2:]
 
 
 def reorderPrio(a: str) -> int:
