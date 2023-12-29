@@ -14,3 +14,6 @@ with open(filename) as f:
     res = sum(signal_strengths)
 
     print(f"Part 1: {res}")
+
+    e.draw()
+    print(e)

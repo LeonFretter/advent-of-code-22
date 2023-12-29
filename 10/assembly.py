@@ -36,6 +36,7 @@ class Execution:
     register: Register
     idx = 0
     hist: list[int] = field(default_factory=list)
+    screen: list[str] = field(default_factory=list)
 
     def step(self) -> None:
         instruction = self.instructions[self.idx]
@@ -61,6 +62,31 @@ class Execution:
     def run(self) -> None:
         while self.idx < len(self.instructions):
             self.step()
+
+    def sprite_center(self, idx: int) -> int:
+        return self.get_value(idx)
+
+    def sprite_positions(self, idx: int) -> list[int]:
+        center = self.sprite_center(idx + 1)
+        return [center - 1, center, center + 1]
+
+    def screen_position(self, idx: int) -> tuple[int, int]:
+        x = idx % 40
+        y = idx // 40
+        return x, y
+
+    def draw(self) -> None:
+        for _ in range(6):
+            self.screen.append("." * 40)
+
+        for idx in range(240):
+            x, y = self.screen_position(idx)
+            sprite_xs = self.sprite_positions(idx)
+            if x in sprite_xs:
+                self.screen[y] = self.screen[y][:x] + "#" + self.screen[y][x + 1:]
+
+    def __str__(self) -> str:
+        return "\n".join(self.screen)
 
 
 def readInstruction(line: str) -> Instruction:
@@ -234,3 +260,6 @@ noop\
     signal_strengths = e.signal_strengths([20, 60, 100, 140, 180, 220])
     res = sum(signal_strengths)
     assert res == 13140
+
+    e.draw()
+    print(e)
